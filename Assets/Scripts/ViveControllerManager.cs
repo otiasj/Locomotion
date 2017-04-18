@@ -15,7 +15,6 @@ public class ViveControllerManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        viveController = GetComponent<SteamVR_TrackedObject>();
         inputControllerImpl = (InputController)inputController.GetComponent("ControllerInputManager");
     }
 	
@@ -30,14 +29,14 @@ public class ViveControllerManager : MonoBehaviour {
         if (device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
         {
             inputControllerImpl.enablePointer(true);
-            inputControllerImpl.aimFrom(gameObject.transform);
+            inputControllerImpl.aimFrom(viveController.transform);
         }
 
         if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
         {
             inputControllerImpl.enablePointer(false);
             inputControllerImpl.moveToPointer();
-        }
+        } 
 
         if (device.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {

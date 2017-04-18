@@ -6,7 +6,7 @@ using UnityEngine;
 public class ControllerInputManager : MonoBehaviour, InputController {
 
     //navigation pointer
-	public LineRenderer laser;
+    public LineRenderer laser;
 	public GameObject teleporter;
     public LayerMask laserMask;
 
@@ -34,7 +34,8 @@ public class ControllerInputManager : MonoBehaviour, InputController {
 
     // Use this for initialization
     void Start () {
-	}
+        laser.gameObject.SetActive(false);
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -53,7 +54,6 @@ public class ControllerInputManager : MonoBehaviour, InputController {
 	}
     
     //InputController Implementation
-
 	public void aimFrom(Transform transformOrigin) {
 		//set the laser origin location
 		laser.SetPosition (0, transformOrigin.position);
@@ -72,7 +72,8 @@ public class ControllerInputManager : MonoBehaviour, InputController {
 				targetLocation.y + yNudgeAmount, 
 				targetLocation.z);
 
-		} else { //if we do not hit anything, 
+		}
+        /*else { //if we do not hit anything, 
 
 			// find the location on ground
 			targetLocation = new Vector3 (transformOrigin.forward.x * laserRange + transformOrigin.position.x,
@@ -81,9 +82,9 @@ public class ControllerInputManager : MonoBehaviour, InputController {
 
 			//find the ground point down at laserRange away, by sending a raycast vertically down
 			RaycastHit groundRay;
-			if (Physics.Raycast (targetLocation, Vector3.down, out groundRay, laserRange, laserMask)) {
+			if (Physics.Raycast (targetLocation, -Vector3.up, out groundRay, laserRange, laserMask)) {
 				targetLocation = new Vector3(transformOrigin.forward.x * laserRange + transformOrigin.position.x,
-					groundRay.transform.position.y,
+					groundRay.point.y,
                     transformOrigin.forward.z * laserRange + transformOrigin.position.z);
 			}
 
@@ -92,7 +93,7 @@ public class ControllerInputManager : MonoBehaviour, InputController {
 
 			// the new position
 			teleporter.transform.position = targetLocation + new Vector3 (0, yNudgeAmount, 0);
-		}
+		}*/
 	}
 
     public void moveForward() {
@@ -103,8 +104,8 @@ public class ControllerInputManager : MonoBehaviour, InputController {
     }
 
     public void enablePointer(bool enabled) {
-        laser.enabled = enabled;
-        teleporter.gameObject.SetActive(enabled);
+        laser.gameObject.SetActive(enabled);
+        teleporter.SetActive(enabled);
     }
 
     public void moveToPointer() {
