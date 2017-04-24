@@ -130,8 +130,8 @@ public class MovementImpl : MonoBehaviour, Movement {
     public void moveToPointer()
     {
         Vector3 cameraFromRigCenter = player.transform.position - playerCam.position;
-        cameraFromRigCenter.y = 0;
         targetLocation = teleporter.transform.position + cameraFromRigCenter;
+        targetLocation.y = 0;
         if (useInstantTeleportation)
         {
             player.transform.position = teleporter.transform.position;

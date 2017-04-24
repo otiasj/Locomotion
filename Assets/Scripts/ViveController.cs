@@ -5,7 +5,7 @@ using UnityEngine;
 /*
 ** Put this Object on the vive left and/or right controller then set the InputController interface implementation.
 */
-public class ViveController : GravityGun
+public class ViveController : MonoBehaviour
 {
 
     private static ulong TRIGGER = SteamVR_Controller.ButtonMask.Trigger;
@@ -15,6 +15,7 @@ public class ViveController : GravityGun
     public SteamVR_TrackedObject viveController;
     public GameObject movementController;
     public GameObject menuController;
+
     public bool isNavigationController;
 
     private SteamVR_Controller.Device device;
@@ -22,16 +23,14 @@ public class ViveController : GravityGun
 
     private Movement movement;
     private Menu menu;
-
-    private HashSet<InteractableBase> objectsHoveringOver = new HashSet<InteractableBase>();
-    private InteractableBase closestItem;
-    private InteractableBase interactingItem;
+    private GravityGun gravityGun;
 
     // Use this for initialization
     void Start()
     {
         movement = (Movement)movementController.GetComponent("MovementImpl");
         menu = (Menu)menuController.GetComponent("MenuImpl");
+        gravityGun = (GravityGun) this.GetComponent("GravityGunImpl");
     }
 
     // Update is called once per frame
@@ -53,39 +52,16 @@ public class ViveController : GravityGun
     private void handleTriggers() {
         if (device.GetPressDown(TRIGGER))
         {
-            // Find the closest item to the hand in case there are multiple and interact with it
-            float minDistance = float.MaxValue;
-
-            float distance;
-            foreach (InteractableBase item in objectsHoveringOver)
-            {
-                distance = (item.transform.position - transform.position).sqrMagnitude;
-
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestItem = item;
-                }
-            }
-
-            interactingItem = closestItem;
-            closestItem = null;
-
-            if (interactingItem)
-            {
-                if (device.GetPressDown(TRIGGER))
-                {
-                    interactingItem.onGrabbedBy(this);
-                }
-            }
+            gravityGun.grab();
         }
 
-        if (device.GetPressUp(TRIGGER) && interactingItem != null)
+        if (device.GetPressUp(TRIGGER))
         {
-            interactingItem.onDroppedBy(this);
+            gravityGun.drop();
         }
     }
 
+    //Either navigation or menu activation
     private void handleTouchpads() { 
         if (device.GetTouch(TOUCHPAD))
         {
@@ -130,23 +106,19 @@ public class ViveController : GravityGun
     //Collision detection with some objects
     void OnTriggerEnter(Collider collider)
     {
-        Debug.Log("OnTriggerEnter " + collider);
         InteractableBase collidingItem = collider.GetComponent<InteractableBase>();
         if (collidingItem)
         {
-            Debug.Log("Adding item "+collidingItem);
-            objectsHoveringOver.Add(collidingItem);
+            gravityGun.onTriggerEnter(collidingItem);
         }
     }
 
     void OnTriggerExit(Collider collider)
     {
-        Debug.Log("OnTriggerExit " + collider);
         InteractableBase collidingItem = collider.GetComponent<InteractableBase>();
         if (collidingItem)
         {
-            Debug.Log("Remove item " + collidingItem);
-            objectsHoveringOver.Remove(collidingItem);
+            gravityGun.onTriggerExit(collidingItem);
         }
     }
     

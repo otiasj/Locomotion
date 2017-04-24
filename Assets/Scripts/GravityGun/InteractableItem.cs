@@ -18,7 +18,7 @@ public class InteractableItem : InteractableBase
     private Vector3 axis;
 
     // The controller this object is picked up by
-    private GravityGun gravityGun;
+    private GameObject anchorObject;
 
     // The point at which the object was grabbed when picked up
     private Transform interactionPoint;
@@ -36,12 +36,12 @@ public class InteractableItem : InteractableBase
     // TODO: Use FixedUpdate for rigidbody manipulation
     protected void Update()
     {
-        if (gravityGun != null && currentlyInteracting)
+        if (anchorObject != null && currentlyInteracting)
         {
-            posDelta = gravityGun.transform.position - interactionPoint.position;
+            posDelta = anchorObject.transform.position - interactionPoint.position;
             this.rigidBody.velocity = posDelta * velocityFactor * Time.fixedDeltaTime;
 
-            rotationDelta = gravityGun.transform.rotation * Quaternion.Inverse(interactionPoint.rotation);
+            rotationDelta = anchorObject.transform.rotation * Quaternion.Inverse(interactionPoint.rotation);
             rotationDelta.ToAngleAxis(out angle, out axis);
 
             if (angle > 180)
@@ -53,21 +53,21 @@ public class InteractableItem : InteractableBase
         }
     }
 
-    public override void onGrabbedBy(GravityGun gravityGun)
+    public override void onGrabbedBy(GameObject anchorObject)
     {
-        this.gravityGun = gravityGun;
-        interactionPoint.position = gravityGun.transform.position;
-        interactionPoint.rotation = gravityGun.transform.rotation;
+        this.anchorObject = anchorObject;
+        interactionPoint.position = this.anchorObject.transform.position;
+        interactionPoint.rotation = this.anchorObject.transform.rotation;
         interactionPoint.SetParent(transform, true);
 
         currentlyInteracting = true;
     }
 
-    public override void onDroppedBy(GravityGun gravityGun)
+    public override void onDroppedBy(GameObject anchorObject)
     {
-        if (gravityGun == this.gravityGun)
+        if (anchorObject == this.anchorObject)
         {
-            this.gravityGun = null;
+            this.anchorObject = null;
             currentlyInteracting = false;
         }
     }
