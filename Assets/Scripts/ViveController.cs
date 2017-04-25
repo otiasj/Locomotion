@@ -166,5 +166,4 @@ public class ViveController : MonoBehaviour
             menu.navigateRight();
         }
     }
-
 }
