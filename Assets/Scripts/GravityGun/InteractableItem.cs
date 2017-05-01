@@ -16,6 +16,7 @@ public class InteractableItem : InteractableBase
     private Quaternion rotationDelta;
     private float angle;
     private Vector3 axis;
+    private Material defaultMaterial;
 
     // The controller this object is picked up by
     private GameObject anchorObject;
@@ -30,10 +31,10 @@ public class InteractableItem : InteractableBase
         interactionPoint = new GameObject().transform;
         velocityFactor /= rigidBody.mass;
         rotationFactor /= rigidBody.mass;
+        defaultMaterial = GetComponent<Renderer>().material;
     }
 
     // Update is called once per frame
-    // TODO: Use FixedUpdate for rigidbody manipulation
     protected void Update()
     {
         if (anchorObject != null && currentlyInteracting)
@@ -53,13 +54,13 @@ public class InteractableItem : InteractableBase
         }
     }
 
-    public override void onGrabbedBy(GameObject anchorObject)
+    public override void onGrabbedBy(GameObject anchorObject, Material grabbedMaterial)
     {
         this.anchorObject = anchorObject;
         interactionPoint.position = this.anchorObject.transform.position;
         interactionPoint.rotation = this.anchorObject.transform.rotation;
         interactionPoint.SetParent(transform, true);
-
+        GetComponent<Renderer>().material = grabbedMaterial;
         currentlyInteracting = true;
     }
 
@@ -69,6 +70,7 @@ public class InteractableItem : InteractableBase
         {
             this.anchorObject = null;
             currentlyInteracting = false;
+            GetComponent<Renderer>().material = defaultMaterial;
         }
     }
 

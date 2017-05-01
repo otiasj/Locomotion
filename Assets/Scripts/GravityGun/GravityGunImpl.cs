@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GravityGunImpl : MonoBehaviour, GravityGun
 {
+    public Material onGrabMaterial;
     public Collider selfCollider;
     public GameObject anchorObject; //where the grabbed object will be anchored
     private HashSet<InteractableBase> collidingObjects = new HashSet<InteractableBase>();
@@ -33,7 +34,7 @@ public class GravityGunImpl : MonoBehaviour, GravityGun
 
         if (interactingItem)
         {
-            interactingItem.onGrabbedBy(anchorObject);
+            interactingItem.onGrabbedBy(anchorObject, onGrabMaterial);
         }
     }
 
