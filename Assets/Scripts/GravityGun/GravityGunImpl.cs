@@ -5,7 +5,7 @@ using UnityEngine;
 public class GravityGunImpl : MonoBehaviour, GravityGun
 {
     public Material onGrabMaterial;
-    public Collider selfCollider;
+    //public Collider selfCollider;
     public GameObject anchorObject; //where the grabbed object will be anchored
     private HashSet<InteractableBase> collidingObjects = new HashSet<InteractableBase>();
     private InteractableBase closestItem;
@@ -13,7 +13,7 @@ public class GravityGunImpl : MonoBehaviour, GravityGun
 
     public void grab()
     {
-        selfCollider.enabled = false;
+        //selfCollider.enabled = false;
         // Find the closest item to the hand in case there are multiple and interact with it
         float minDistance = float.MaxValue;
 
@@ -40,7 +40,7 @@ public class GravityGunImpl : MonoBehaviour, GravityGun
 
     public void drop()
     {
-        selfCollider.enabled = true;
+        //selfCollider.enabled = true;
         if (interactingItem != null)
         {
             interactingItem.onDroppedBy(anchorObject);
